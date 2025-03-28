@@ -1,0 +1,44 @@
+{
+  "name": "api-monitoramento",
+  "version": "1.0.0",
+  "description": "API desenvolvida para realizar,  gerenciar, compilar e fornecer analise de KPIs para o monitoramento de ocorrencias em uma rota diaria de entregas em mapas",
+  "keywords": [
+    "monitoramento",
+    "monitoring",
+    "kpi",
+    "ambev",
+    "rota",
+    "mapas",
+    "entregas",
+    "delivery",
+    "frotas",
+    "cargas",
+    "devoluções",
+    "devolucoes",
+    "pedidos",
+    "gerenciamento",
+    "rotas"
+  ],
+  "homepage": "https://github.com/Luskahz/API-Monitoramento#readme",
+  "bugs": {
+    "url": "https://github.com/Luskahz/API-Monitoramento/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luskahz/API-Monitoramento.git"
+  },
+  "license": "ISC",
+  "author": "Luskahz",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  }
+}
