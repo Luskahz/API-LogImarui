@@ -7,11 +7,9 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model user {
-  id     Int      @id @default(autoincrement())
-  name   String   @db.VarChar(255)
-  email  String    @unique(map: "email") @db.VarChar(255)
-  pass   String    @db.VarChar(255)
-  avatar String?   @db.VarChar(500)
+model BaseData {
+  id        Int      @id @default(autoincrement())
+  dados     Json     
+  timestamp DateTime @default(now()) 
 }
 

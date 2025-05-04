@@ -1,16 +1,25 @@
+import csvtojson from 'csvtojson'; 
+import { uploadBase } from '../model/baseModel.js'
 
 
 
+export async function uploadBaseController(req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).send('Nem um arquivo foi enviado');
+        }
+        const filePath = req.file.path;
+        const jsonData = await csvtojson().fromFile(filePath);
 
-export async function uploadBase(req, res) {
-    const base = req.body
-    
+        if (!Array.isArray(jsonData) || jsonData.length === 0) {
+            return res.status(400).send('Arquivo CSV inválido ou vazio');
+        }
+        
+        await uploadBase(jsonData);
 
-
-    const result = await "funcão do model"
-
-    return res.json({
-        message: "Base recebida com sucesso",
-        base: result
-    })
+        res.status(200).send('Dados atualizados com sucesso!');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao processar o arquivo');
+    }
 }
