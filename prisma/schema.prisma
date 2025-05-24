@@ -7,9 +7,83 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model BaseData {
-  id        Int      @id @default(autoincrement())
-  dados     Json     
-  timestamp DateTime @default(now()) 
+
+model Base031140 {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes   
+  uploader     String?
 }
 
+model Base030530 {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model Base030237 {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model Base030237Itens {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model Base030224 {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model BaseBees {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model BaseWMS {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model BaseClientes {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+model BaseProdutos {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  uploadedAt   DateTime @default(now())
+  fileBuffer   Bytes
+  uploader     String?
+}
+
+
+model JsonProcessLog {
+  id           String   @id     // Ex: '031140', '030237', 'bees', 'wms'
+  processedAt  DateTime @default(now())
+  jsonPath     String?
+  processedBy  String?
+}
