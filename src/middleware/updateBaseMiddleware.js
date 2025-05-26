@@ -1,10 +1,10 @@
 // middlewares/updateBaseMiddleware.js
 import { z } from 'zod'
-import { baseModelMap } from '../utils/prisma.js'        // ou o caminho correto pra seu prisma.js
-import baseControllers from '../controllers/update_base/baseControllers.js'  // import dos controllers mapeados
+import { baseModelMap } from '../model/utils/baseRouterMap.js' 
+import { baseControllers } from '../controllers/updateBaseController.js'
 
-// 1) Zod schema (id, filename, uploadedAt, fileBuffer, uploader)
-const baseMapaSchema = z.object({
+
+const baseMapaSchema = z.object({// validação zod para os atributos do schemma 
   id: z.number({
     required_error: 'O id é obrigatório.',
     invalid_type_error: 'O id deve ser um número.'
@@ -33,26 +33,27 @@ const baseMapaSchema = z.object({
     .optional()
 })
 
-export function updateBaseMiddleware(req, res, next) {
+export function validator (baseMapa, partial = null){// função pra validação dos metadados do schemma
+    if (partial) {
+      return baseMapaSchema.partial(partial).safeParse(baseMapa);
+    }
+    return baseMapaSchema.safeParse(baseMapa);
+  }
+
+export function updateBaseMiddleware(req, res, next) {//middleware propriamente dito
   const { baseId } = req.params
   const file = req.file
 
-  // 1) Verifica se veio um arquivo
-  if (!file) {
+  if (!file) {// verifica a existencia do csv
     return res.status(400).json({ error: 'Arquivo não enviado.' })
   }
-
-  // 2) Verifica se o baseId existe no schema Prisma
-  if (!baseModelMap[baseId]) {
+  if (!baseModelMap[baseId]) {//verifica se há uma base equivalente a esse id
     return res.status(400).json({ error: 'Base desconhecida.' })
   }
-
-  // 3) Verifica se há um controller implementado pra esse baseId
-  if (!baseControllers[baseId]) {
+  if (!baseControllers[baseId]) {//verifica se há um controller pra esse id
     return res.status(500).json({ error: 'Controller da base não implementado.' })
   }
 
-  // 4) Monta o objeto de "metadados" e valida com Zod
   const metadata = {
     id: parseInt(req.body.id, 10),
     filename: file.originalname,
@@ -61,13 +62,13 @@ export function updateBaseMiddleware(req, res, next) {
     uploader: req.body.uploader || 'Sistema'
   }
 
-  const parsed = baseMapaSchema.safeParse(metadata)
+  const parsed = baseMapaSchema.safeParse(metadata)//cria o parsed, e valida no zod
   if (!parsed.success) {
     const details = parsed.error.format()
     return res.status(400).json({ error: 'Erro na validação dos metadados.', details })
   }
 
-  // 5) Se chegou aqui, tudo ok: injeta no req
+
   req.validatedBaseMetadata = parsed.data
   req.selectedBaseController = baseControllers[baseId]
   next()

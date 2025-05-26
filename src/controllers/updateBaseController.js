@@ -11,7 +11,7 @@ import baseClientesController from './update_base/clientesController.js'
 import baseProdutosController from './update_base/produtosController.js'
 
 
-const baseControllers = {
+export const baseControllers = {
   '031140': base031140Controller,
   '030530': base030530Controller,
   '030237': base030237Controller,
@@ -38,7 +38,7 @@ export default async function updateBaseController(req, res, next) {
     if (!baseControllers[baseId]) {
       return res.status(500).send('Controller da base não implementado.')
     }
-    
+
     await baseControllers[baseId](file, uploader, req, res)
 
     return res.status(200).send('Validação concluída.'); // Placeholder
