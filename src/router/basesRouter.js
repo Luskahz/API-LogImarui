@@ -1,11 +1,10 @@
-import express from 'express'
-import { atualBaseController } from '../controller/atualBaseController.js'
+import { Router } from 'express'
+import multer from 'multer'
+import updateBaseController from '../controllers/updateBaseController'
 
+const router = Router()
+const upload = multer()
 
-const router  = express.Router()
-
-router.get('/atual', atualBaseController)
-
-
+router.post('/:baseId', upload.single('file'), updateBaseController)
 
 export default router
