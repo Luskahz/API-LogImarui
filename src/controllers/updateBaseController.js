@@ -1,48 +1,35 @@
-import { baseModelMap } from '../../utils/prisma.js'
-
-
-import base031140Controller from './update_base/031140Controller.js'
-import base030530Controller from './update_base/030530Controller.js'
-import base030237Controller from './update_base/030237Controller.js'
 import base030237_2Controller from './update_base/030237_2Controller.js'
+import base030237Controller from './update_base/030237Controller.js'
+import base030530Controller from './update_base/030530Controller.js'
+import base031140Controller from './update_base/031140Controller.js'
 import baseBeesController from './update_base/beesController.js'
-import baseWMSController from './update_base/wmsController.js'
 import baseClientesController from './update_base/clientesController.js'
 import baseProdutosController from './update_base/produtosController.js'
+import baseWMSController from './update_base/wmsController.js'
 
 
 export const baseControllers = {
-  '031140': base031140Controller,
-  '030530': base030530Controller,
-  '030237': base030237Controller,
   '030237_2': base030237_2Controller,
-  'bees': baseBeesController,
-  'wms': baseWMSController,
+  '030237':   base030237Controller,
+  '030530':   base030530Controller,
+  '031140':   base031140Controller,
+  'bees':     baseBeesController,
   'clientes': baseClientesController,
   'produtos': baseProdutosController,
+  'wms':      baseWMSController
 }
 export default async function updateBaseController(req, res, next) {
   try {
-    const { baseId } = req.params;
-    const file = req.file;
-    const uploader = req.body.uploader || 'Sistema';
+    const { validatedBaseMetadata, selectedBaseController } = req;
+    const { fileBuffer, uploader } = validatedBaseMetadata;
 
-    if (!file) {
-      return res.status(400).send('Arquivo não enviado.');
+    const result = await selectedBaseController(fileBuffer, uploader, req, res);
+
+    if (result && result.success === false) {
+      return res.status(400).json({ error: result.error || 'Falha na validação.' });
     }
 
-    if (!baseModelMap[baseId]) {
-      return res.status(400).send('Base desconhecida.');
-    }
-
-    if (!baseControllers[baseId]) {
-      return res.status(500).send('Controller da base não implementado.')
-    }
-
-    await baseControllers[baseId](file, uploader, req, res)
-
-    return res.status(200).send('Validação concluída.'); // Placeholder
-
+    return res.status(200).send('Validação concluída.');
   } catch (error) {
     next(error);
   }
