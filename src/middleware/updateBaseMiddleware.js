@@ -11,6 +11,7 @@ export function partialValidator(baseMapa, partial = null){// função pra valid
     return baseMapaSchema.safeParse(baseMapa);
   }
 export function updateBaseMiddleware(req, res, next) {//middleware valida a existencia dos arquivos, e pra qual controller eles vão ser mandados
+  console.log('Middleware updateBaseMiddleware executado');
   const { baseId } = req.params
   const file = req.file
   const uploader = req.body.uploader || 'Sistema';

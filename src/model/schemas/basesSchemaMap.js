@@ -1,9 +1,15 @@
 import { z } from "zod";
 
+function parseDate(str) {
+  const [dd, mm, yyyy] = str.split('/');
+  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export const Schema031140 = z.array(z.object({
   "Mapa": z.string().min(1),
   "Veículo": z.string().min(1),
-  "Placa": z.string().min(1),
+  "Placa": z.string().optional().or(z.literal('')),
   "Dt Entrega": z.string().min(1),
   "Entregas": z.string().min(1),
   "Hora Emis": z.string().min(1),
