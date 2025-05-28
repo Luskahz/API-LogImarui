@@ -357,6 +357,9 @@ export const SchemaProdutos = z.array(z.object({
   "Subtipo": z.string().min(1)
 }));
 
+
+
+
 export const baseSchemas = {
   '031140': Schema031140,
   '030530': Schema030530,
@@ -368,6 +371,7 @@ export const baseSchemas = {
   'produtos': SchemaProdutos,
   // adicione outros conforme necessário
 };
+
 
 export function validateBaseById(baseId, jsonFile, partial = null) {
   const schema = baseSchemas[baseId];

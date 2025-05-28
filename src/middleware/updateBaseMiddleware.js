@@ -1,7 +1,7 @@
 // middlewares/updateBaseMiddleware.js
-import { baseModelMap } from '../model/utils/baseRouterMap.js' 
+import { baseModelMap } from '../model/schemas/baseRouterMap.js' 
 import { baseControllers } from '../controllers/updateBaseController.js'
-import { baseMapaSchema } from '../model/utils/baseRouterMap.js';
+import { baseMapaSchema } from '../model/schemas/baseRouterMap.js';
 
 
 export function partialValidator(baseMapa, partial = null){// função pra validação dos metadados do schemma
@@ -16,7 +16,8 @@ export function updateBaseMiddleware(req, res, next) {//middleware valida a exis
   const uploader = req.body.uploader || 'Sistema';
 
   if (!file) {// verifica a existencia do csv
-    return res.status(400).json({ error: 'Arquivo não enviado.' })
+    //return res.status(400).json({ error: 'Arquivo não enviado.' })
+    console.error('Arquivo não enviado. funcionando até aqui')
   }
   if (!baseModelMap[baseId]) {//verifica se há uma base equivalente a esse id
     return res.status(400).json({ error: 'Base desconhecida.' })
@@ -34,7 +35,7 @@ export function updateBaseMiddleware(req, res, next) {//middleware valida a exis
   if (req.body.id) {
     metadata.id = parseInt(req.body.id, 10);
   }
-  const parsed = partialValidator(metadata, { id: true })
+  const parsed = partialValidator(metadata, { id: true })//aqui ele cria o objeto de metadados e valida ele com a função
   if (!parsed.success) {
     const details = parsed.error.format()
     return res.status(400).json({ error: 'Erro na validação dos metadados.', details })

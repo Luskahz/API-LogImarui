@@ -13,11 +13,12 @@ app.use(logger)
 app.use(cors())
 app.use(express.json())
 
-
 app.get('/', welcomeController)
+
 app.use('/bases', basesRouter)
 
 app.use('*', notFoundController)
+
 app.use(errorsHandler)
 
 app.listen(port, () => {

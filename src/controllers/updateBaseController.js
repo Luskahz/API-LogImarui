@@ -18,19 +18,21 @@ export const baseControllers = {
   'produtos': baseProdutosController,
   'wms':      baseWMSController
 }
+
 export default async function updateBaseController(req, res, next) {
   try {
-    const { validatedBaseMetadata, selectedBaseController } = req;
-    const { fileBuffer, uploader } = validatedBaseMetadata;
+    const { validatedBaseMetadata, selectedBaseController } = req
+    const { fileBuffer, uploader } = validatedBaseMetadata
 
-    const result = await selectedBaseController(fileBuffer, uploader, req, res);
-
-    if (result && result.success === false) {
-      return res.status(400).json({ error: result.error || 'Falha na validação.' });
+    const result = await selectedBaseController(fileBuffer, uploader)
+    if (!result.success) {
+      return res.status(400).json({ error: result.error, details: result.details });
     }
-
-    return res.status(200).send('Validação concluída.');
+    return res.status(201).json({
+      message: "Base atualizada com sucesso!",
+      data: result.data
+    });
   } catch (error) {
-    next(error);
+    next(error)
   }
 }

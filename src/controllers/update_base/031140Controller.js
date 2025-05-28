@@ -1,17 +1,88 @@
 import csv from "csvtojson";
+import { validateBaseById} from "../../model/schemas/basesSchemaMap.js";
+import { create } from "../../model/bases/basesModel.js";
+import { Parser } from 'json2csv';
 
-export default async function base031140Controller(fileBuffer, uploader, req, res) {
+function limparChavesDosObjetos(arr) {
+  return arr
+    .map(obj => {
+      const novoObj = {};
+      for (const key in obj) {
+        const chaveLimpa = key.trim();
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          for (const subKey in obj[key]) {
+            novoObj[`${chaveLimpa} ${subKey}`] = obj[key][subKey];
+          }
+        } else {
+          novoObj[chaveLimpa] = typeof obj[key] === 'string' ? obj[key].trim() : obj[key];
+        }
+      }
+      return novoObj;
+    })
+    .filter(obj => {
+      // Filtro para remover linhas inválidas
+      if (!obj["Placa"] || !obj["Dt Entrega"] || !obj["KM Rodado"]) return false;
+      if (obj["Mapa"]?.toLowerCase().includes("resumo")) return false;
+      if (obj["Mapa"]?.toLowerCase().includes("tempo")) return false;
+      return true;
+    });
+}
+
+function jsonParaCsv(jsonData) {
+  const json2csvParser = new Parser({ delimiter: ';' });
+  const csv = json2csvParser.parse(jsonData);
+  return csv;
+}
+
+export default async function base031140Controller(fileBuffer, uploader) {
   try {
-    const jsonData = await csv().fromString(fileBuffer.toString('utf8'));
+    const now = Date.now();
+    const formattedDate = new Date(now).toISOString().replace(/[-:]/g, '').replace('T', '_').split('.')[0];
+
+    const fileString = fileBuffer.toString('latin1');
+    
+    const jsonData = await csv({
+      delimiter: ';',
+      checkType: false,
+      noheader: false,
+      trim: true,
+      flatKeys: true
+    }).fromString(fileString);
 
     if (!jsonData || jsonData.length === 0) {
-      return res.status(400).send('Arquivo CSV vazio ou inválido.');
+      return { success: false, error: "Arquivo CSV vazio ou inválido." };
     }
 
-    // Aqui você pode fazer a validação e persistência
-    res.status(200).send('Base 031140 atualizada com sucesso!');
+    const jsonLimpo = limparChavesDosObjetos(jsonData);
+
+    const validateJsonData = validateBaseById('031140', jsonLimpo);
+
+    if (!validateJsonData.success) {
+      const details = validateJsonData.error.format();
+      return { success: false, error: "Erro na validação do CSV.", details };
+    }
+    const csvString = jsonParaCsv(jsonLimpo);
+    const fileBufferLimpo = Buffer.from(csvString, 'latin1');
+
+    const metadata = {
+      filename: `base_031140_${formattedDate}.csv`,
+      uploadedAt: new Date(),
+      fileBuffer: fileBufferLimpo,  
+      uploader: uploader || 'Sistema'
+    };
+
+    console.log('fileBuffer (tamanho):', fileBuffer.length);
+    console.log('fileBuffer (início):', fileBuffer.toString('utf8', 0, 20000));
+
+    const result = await create(metadata, '031140'); // 
+
+    return {
+      success: true,
+      data: result
+    };
+
   } catch (error) {
     console.error("Erro ao processar o CSV:", error);
-    res.status(500).send('Erro ao processar o arquivo CSV.');
+    return { success: false, error: "Erro ao processar o arquivo CSV." };
   }
 }
