@@ -81,9 +81,12 @@ model BaseProdutos {
 }
 
 
-model JsonProcessLog {
-  id           String   @id     // Ex: '031140', '030237', 'bees', 'wms'
-  processedAt  DateTime @default(now())
-  jsonPath     String?
-  processedBy  String?
-}
+model CsvBufferBases {
+  id            Int      @id @default(autoincrement())
+  baseId        String   // Ex: '031140'
+  uploadedAt    DateTime @default(now())
+  baseMinDate   DateTime // menor Dt Entrega do CSV
+  baseMaxDate   DateTime // maior Dt Entrega do CSV
+  fileBuffer    Bytes // Buffer do CSV
+  uploader      String?
+} 

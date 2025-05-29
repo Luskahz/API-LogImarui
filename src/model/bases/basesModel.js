@@ -4,10 +4,10 @@ import { baseModelMap } from "../schemas/baseRouterMap.js"
 const prisma = new PrismaClient()
 
 
-export async function create(base, baseId) {
-  const result = await baseModelMap[baseId].create({
+export async function createCsvBuffer(base) {
+  const result = await baseModelMap["csvBuffer"].create({
     data: base
   })
-  console.log(`>> Base ${baseId}, criada:`, result)
+  console.log(`>> registro criado na tabela buffer`, result)
   return result;
 }

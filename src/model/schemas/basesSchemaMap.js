@@ -8,23 +8,23 @@ function parseDate(str) {
 
 export const Schema031140 = z.array(z.object({
   "Mapa": z.string().min(1),
-  "Veículo": z.string().min(1),
+  "Veículo": z.string().optional().or(z.literal('')),
   "Placa": z.string().optional().or(z.literal('')),
-  "Dt Entrega": z.string().min(1),
-  "Entregas": z.string().min(1),
-  "Hora Emis": z.string().min(1),
-  "Hora Carreg": z.string().min(1),
-  "Hora Saida": z.string().min(1),
-  "Hora Chegada": z.string().min(1),
-  "Hora P.Fis": z.string().min(1),
-  "Hora P.Fin": z.string().min(1),
-  "Tempo Rota": z.string().min(1),
-  "Tempo P.Fis": z.string().min(1),
-  "Tempo P.Fin": z.string().min(1),
-  "Tempo Interno": z.string().min(1),
-  "KM Inicial": z.string().min(1),
-  "KM Final": z.string().min(1),
-  "KM Rodado": z.string().min(1)
+  "Dt Entrega": z.string().optional().or(z.literal('')),
+  "Entregas": z.string().optional().or(z.literal('')),
+  "Hora Emis": z.string().optional().or(z.literal('')),
+  "Hora Carreg": z.string().optional().or(z.literal('')),
+  "Hora Saida": z.string().optional().or(z.literal('')),
+  "Hora Chegada": z.string().optional().or(z.literal('')),
+  "Hora P.Fis": z.string().optional().or(z.literal('')),
+  "Hora P.Fin": z.string().optional().or(z.literal('')),
+  "Tempo Rota": z.string().optional().or(z.literal('')),
+  "Tempo P.Fis": z.string().optional().or(z.literal('')),
+  "Tempo P.Fin": z.string().optional().or(z.literal('')),
+  "Tempo Interno": z.string().optional().or(z.literal('')),
+  "KM Inicial": z.string().optional().or(z.literal('')),
+  "KM Final": z.string().optional().or(z.literal('')),
+  "KM Rodado": z.string().optional().or(z.literal(''))
 }));
 export const Schema030530 = z.array(z.object({
   "Cód. Cliente": z.string().min(1),
@@ -362,9 +362,68 @@ export const SchemaProdutos = z.array(z.object({
   "Descrição unitária": z.string().min(1),
   "Subtipo": z.string().min(1)
 }));
+export const SchemaBees = z.array(z.object({
+  "tour_display_id": z.string().min(1),
+  "tour_date": z.string().min(1),
+  "distribution_center_id": z.string().min(1),
+  "driver_name": z.string().min(1),
+  "poc_external_id": z.string().min(1),
+  "status": z.string().min(1),
+  "trip_start_timestamp": z.string().min(1),
+  "trip_end_timestamp": z.string().min(1),
+  "visit_order": z.string().min(1),
+  "within_radius": z.string().min(1),
+  "actual_delivery_time": z.string().min(1),
+  "arrived_at": z.string().min(1),
+  "finished_at": z.string().min(1),
+  "last_reason_waiting_modulation": z.string().min(1),
+  "last_reason_rescheduled": z.string().min(1),
+  "total_delivered_vol": z.string().min(1),
+  "total_refused_vol": z.string().min(1),
+  "foxtrot_adherence": z.string().min(1),
+  "estimated_delivery_time": z.string().min(1),
+  "volume_hectoliters_sum": z.string().min(1),
+  "bees_poc_id": z.string().min(1),
+  "bees_tour_id": z.string().min(1),
+  "bees_trip_id": z.string().min(1),
+  "bees_created_date": z.string().min(1),
+  "bees_last_reason_id_waiting_modulation": z.string().min(1),
+  "bees_last_reason_id_waiting_rescheduled": z.string().min(1)
+}));
+export const csvBufferBasesSchema = z.object({
+  id: z.number({
+      required_error: "O id é obrigatório.",
+      invalid_type_error: "O id deve ser um número.",
+    }).int().positive({ message: "O ID deve ser um valor numérico positivo." }),
 
+  baseId: z.string({
+      required_error: "O baseId é obrigatório.",
+      invalid_type_error: "O baseId deve ser uma string.",
+    }).min(1, { message: "O baseId não pode estar vazio." }),
 
+  uploadedAt: z.coerce.date({
+    required_error: "A data de upload é obrigatória.",
+    invalid_type_error: "A data de upload deve ser uma data válida.",
+  }),
 
+  baseMinDate: z.coerce.date({
+    required_error: "A menor data da base é obrigatória.",
+    invalid_type_error: "A menor data da base deve ser uma data válida.",
+  }).optional(),
+
+  baseMaxDate: z.coerce.date({
+    required_error: "A maior data da base é obrigatória.",
+    invalid_type_error: "A maior data da base deve ser uma data válida.",
+  }).optional(),
+
+  fileBuffer: z.instanceof(Buffer, {
+    message: "O conteúdo do arquivo deve ser um Buffer.",
+  }),
+
+  uploader: z.string({
+      invalid_type_error: "O nome do uploader deve ser uma string.",
+    }).optional(),
+})
 
 export const baseSchemas = {
   '031140': Schema031140,
@@ -375,7 +434,8 @@ export const baseSchemas = {
   'wms': SchemaWMS,
   'clientes': SchemaClientes,
   'produtos': SchemaProdutos,
-  // adicione outros conforme necessário
+  'bees': SchemaBees,
+  'csvBuffer': csvBufferBasesSchema
 };
 
 

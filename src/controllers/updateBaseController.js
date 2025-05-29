@@ -23,13 +23,14 @@ export default async function updateBaseController(req, res, next) {
   try {
     const { validatedBaseMetadata, selectedBaseController } = req
     const { fileBuffer, uploader } = validatedBaseMetadata
+    const { baseId } = req.params
 
-    const result = await selectedBaseController(fileBuffer, uploader)
+    const result = await selectedBaseController(fileBuffer, uploader, baseId)
     if (!result.success) {
       return res.status(400).json({ error: result.error, details: result.details });
     }
     return res.status(201).json({
-      message: "Base atualizada com sucesso!",
+      message: "Base atualizada com sucesso!\n",
       data: result.data
     });
   } catch (error) {

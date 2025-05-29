@@ -1,44 +1,41 @@
-import { csvStringParaJson, limparCabecalhosCsv, jsonParaCsv } from "../csvTratamentController.js";
+import { csvStringParaJson, limparCabecalhosCsv, getMinMaxDtEntrega, jsonParaCsv, LimparLixo } from "../csvTratamentController.js";
 import { validateBaseById} from "../../model/schemas/basesSchemaMap.js";
-import { create } from "../../model/bases/basesModel.js";
+import { createCsvBuffer } from "../../model/bases/basesModel.js";
 
-export default async function base031140Controller(fileBuffer, uploader) {
+export default async function base031140Controller(fileBuffer, uploader, baseId) {
   try {
-    const now = Date.now();
-    const formattedDate = new Date(now).toISOString().replace(/[-:]/g, '').replace('T', '_').split('.')[0];
-
-    const fileString = fileBuffer.toString('latin1');
-    const jsonData = await csvStringParaJson(fileString)
-
+    const fileString = fileBuffer.toString('latin1') //buffer em string
+    const jsonData = await csvStringParaJson(fileString) //String em json
 
     if (!jsonData || jsonData.length === 0) {
-      return { success: false, error: "Arquivo CSV vazio ou inválido." };
+      return { success: false, error: "\nArquivo CSV vazio ou inválido.\n" };
     }
-
-    // ajustar os cabeçalhos
-    const jsonLimpo = limparCabecalhosCsv(jsonData);
-    console.log('JSON Limpo:', jsonLimpo);
-    //limpar lixo
-    
-
-
-    const validateJsonData = validateBaseById('031140', jsonLimpo);
-
+    //tratamento do arquivo
+    const jsonCabeçalhoLimpo = limparCabecalhosCsv(jsonData)
+    const jsonLimpo = LimparLixo(jsonCabeçalhoLimpo, baseId); 
+    const validateJsonData = validateBaseById(baseId, jsonLimpo);
     if (!validateJsonData.success) {
       const details = validateJsonData.error.format();
-      return { success: false, error: "Erro na validação do CSV.", details };
+      return { success: false, error: "Csv incorreto, valide o arquivo", details };
     }
+    const { minDate, maxDate } = getMinMaxDtEntrega(jsonLimpo);
+    console.log("Data mais antiga:", minDate);
+    console.log("Data mais recente:", maxDate);
+    
+
     const csvString = jsonParaCsv(jsonLimpo);
     const fileBufferLimpo = Buffer.from(csvString, 'latin1');
 
     const metadata = {
-      filename: `base_031140_${formattedDate}.csv`,
+      baseId: baseId,
       uploadedAt: new Date(),
+      baseMinDate: minDate,
+      baseMaxDate: maxDate,
       fileBuffer: fileBufferLimpo,  
-      uploader: uploader || 'Sistema'
+      uploader: uploader || 'Developer',
     };
 
-    const result = await create(metadata, '031140'); // 
+    const result = await createCsvBuffer(metadata); //salva o buffer na base csvBufferBases
 
     return {
       success: true,
@@ -46,6 +43,6 @@ export default async function base031140Controller(fileBuffer, uploader) {
     };
 
   } catch (error) {
-    next(error)
+    throw error;
   }
 }
