@@ -6,6 +6,7 @@ import baseBeesController from './update_base/beesController.js'
 import baseClientesController from './update_base/clientesController.js'
 import baseProdutosController from './update_base/produtosController.js'
 import baseWMSController from './update_base/wmsController.js'
+import csvBufferBaseController from './csvBufferBaseController.js'
 
 
 export const baseControllers = {
@@ -16,23 +17,36 @@ export const baseControllers = {
   'bees':     baseBeesController,
   'clientes': baseClientesController,
   'produtos': baseProdutosController,
-  'wms':      baseWMSController
+  'wms':      baseWMSController,
+  'csvBuffer': csvBufferBaseController
 }
 
 export default async function updateBaseController(req, res, next) {
   try {
+    //RECAPTULANDO
     const { validatedBaseMetadata, selectedBaseController } = req
     const { fileBuffer, uploader } = validatedBaseMetadata
     const { baseId } = req.params
 
+
+    //SALVANDO O BUFFER NA BASE CSVBUFFER
+    const resultBuffer = await baseControllers["csvBuffer"](fileBuffer, uploader, baseId)
+    if (!resultBuffer.success) {
+      return res.status(400).json({message: "erro ao salvar o buffer no banco", error: resultBuffer.error, details: resultBuffer.details })
+    }
+
+
+    //SALVANDO O CSV NA BASE ESPECÍFICA
     const result = await selectedBaseController(fileBuffer, uploader, baseId)
     if (!result.success) {
-      return res.status(400).json({ error: result.error, details: result.details });
+      return res.status(400).json({ message: "erro ao salvar os objetos na base", error: result.error, details: result.details })
     }
+
+    //RESPOSTA AO USER
     return res.status(201).json({
       message: "Base atualizada com sucesso!\n",
       data: result.data
-    });
+    })
   } catch (error) {
     next(error)
   }

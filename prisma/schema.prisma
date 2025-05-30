@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,85 +7,460 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model CsvBufferBases {
+  id          Int      @id @default(autoincrement())
+  baseId      String   @db.Text
+  uploadedAt  DateTime @default(now())
+  baseMinDate DateTime
+  baseMaxDate DateTime
+  fileBuffer  Bytes
+  uploader    String?  @db.Text
+
+  // Relações
+  Base031140s     Base031140[]
+  Base030530s     Base030530[]
+  Base030237s     Base030237[]
+  Base030237Itens Base030237Itens[]
+  Base030224s     Base030224[]
+  BaseBees        BaseBees[]
+  BaseWMS         BaseWMS[]
+  BaseClientes    BaseClientes[]
+  BaseProdutos    BaseProdutos[]
+}
+
 model Base031140 {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes   
-  uploader     String?
+  id           Int     @id @default(autoincrement())
+  csvBufferId  Int
+  Mapa         String  @db.Text
+  Veículo      String? @db.Text
+  Placa        String? @db.Text
+  DtEntrega    String? @db.Text
+  Entregas     String? @db.Text
+  HoraEmis     String? @db.Text
+  HoraCarreg   String? @db.Text
+  HoraSaida    String? @db.Text
+  HoraChegada  String? @db.Text
+  HoraPFis     String? @db.Text
+  HoraPFin     String? @db.Text
+  TempoRota    String? @db.Text
+  TempoPFis    String? @db.Text
+  TempoPFin    String? @db.Text
+  TempoInterno String? @db.Text
+  KMInicial    String? @db.Text
+  KMFinal      String? @db.Text
+  KMRodado     String? @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model Base030530 {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                Int    @id @default(autoincrement())
+  csvBufferId       Int
+  CodCliente        String @db.Text
+  Descricao         String @db.Text
+  Data              String @db.Text
+  Mapa              String @db.Text
+  Veiculo           String @db.Text
+  Placa             String @db.Text
+  Motorista         String @db.Text
+  CodProduto        String @db.Text
+  DescricaoProduto  String @db.Text
+  CodCliente2       String @db.Text
+  DescricaoCliente2 String @db.Text
+  Peso              String @db.Text
+  Ocup              String @db.Text
+  Volume            String @db.Text
+  Ocup2             String @db.Text
+  VolAgendado       String @db.Text
+  Entregas          String @db.Text
+  Pedidos           String @db.Text
+  DSizeAgend        String @db.Text  
+  DSizeTotal        String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model Base030237 {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                        Int    @id @default(autoincrement())
+  csvBufferId               Int
+  Empresa                   String @db.Text
+  Filial                    String @db.Text
+  Cliente                   String @db.Text
+  Mapa                      String @db.Text
+  CodigoVei                 String @db.Text
+  Nome                      String @db.Text
+  TotalMapa                 String @db.Text
+  NrTitBco                  String @db.Text
+  NrPedido                  String @db.Text
+  IPI                       String @db.Text
+  Frete                     String @db.Text
+  AdicEscal                 String @db.Text
+  TribPISPauta              String @db.Text
+  TribPISAliquota           String @db.Text
+  TribCOFINSPauta           String @db.Text
+  TribCOFINSAliquota        String @db.Text
+  NFReferencia              String @db.Text
+  SerieNFReferencia         String @db.Text
+  DataNFReferencia          String @db.Text
+  StatusNFe                 String @db.Text
+  MotivoRejeicaoDenegacao   String @db.Text
+  DescricaoMotivo           String @db.Text
+  DataContingencia          String @db.Text
+  HoraContingencia          String @db.Text
+  NrProtocolo               String @db.Text
+  ChaveAcessoNFe            String @db.Text
+  IndicadorNFe              String @db.Text
+  HoraEnvio                 String @db.Text
+  HoraRetorno               String @db.Text
+  IndicadorCaneta           String @db.Text
+  IndicadorForaRotaEntrega  String @db.Text
+  IDMensageria              String @db.Text
+  StatusSefazHBNFeX         String @db.Text
+  DataRetornoHBNFeX         String @db.Text
+  HoraRetornoHBNFeX         String @db.Text
+  DataEnvio2V               String @db.Text
+  EstoqueAtualizado         String @db.Text
+  DtEmissaoFiscal           String @db.Text
+  NotaFiscalExportadaPromax String @db.Text
+  Prazo                     String @db.Text
+  NFRetornoVasilhame        String @db.Text
+  NFVendaAGProdutoMaterial  String @db.Text
+  NFRetornoRemessaPuxadaAG  String @db.Text
+  NFRecolhaComodato         String @db.Text
+  NFTrocaRealizada          String @db.Text
+  TaxaEntrega               String @db.Text
+  OrigemPedido              String @db.Text
+  VlDescontoAlgoritmo       String @db.Text
+  MetaAlgoritmo             String @db.Text
+  DescDisponivelPadrao      String @db.Text
+  DescDisponivelAcao        String @db.Text
+  VlDescontoAlgoritmoAut    String @db.Text
+  CodigoAcaoDescontoAlgFix  String @db.Text
+  ValorTTVPlanejado         String @db.Text
+  ValorSugerido             String @db.Text
+  CodSetorAtendimento       String @db.Text
+  TipoSetorAtendimento      String @db.Text
+  DataCapturaPedido         String @db.Text
+  NFRegerada                String @db.Text
+  SerieNFRegerada           String @db.Text
+  IndicadorCancelamento     String @db.Text
+  RedIcmsProprio            String @db.Text
+  RedFecopProprio           String @db.Text
+  RedIcmsST                 String @db.Text
+  RedFecopST                String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model Base030237Itens {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                        Int    @id @default(autoincrement())
+  csvBufferId               Int
+  Empresa                   String @db.Text
+  Filial                    String @db.Text
+  Operacao                  String @db.Text
+  CodigoVei                 String @db.Text
+  Mapa                      String @db.Text
+  DtOperacao                String @db.Text
+  Emissao                   String @db.Text
+  Nota                      String @db.Text
+  Serie                     String @db.Text
+  Status                    String @db.Text
+  MotCancelamento           String @db.Text
+  TransfMultiCDD            String @db.Text
+  Cliente                   String @db.Text
+  Nome                      String @db.Text
+  IndicadorCAPrazo          String @db.Text
+  Produto                   String @db.Text
+  Unidade                   String @db.Text
+  Descricao                 String @db.Text
+  ComboVendas               String @db.Text
+  Qtde                      String @db.Text
+  Valor                     String @db.Text
+  ICMS                      String @db.Text
+  ICMSSt                    String @db.Text
+  AdicFinan                 String @db.Text
+  Desconto                  String @db.Text
+  Total                     String @db.Text
+  NrTitBco                  String @db.Text
+  NrPedido                  String @db.Text
+  IPI                       String @db.Text
+  Frete                     String @db.Text
+  AdicEscal                 String @db.Text
+  TribPISPauta              String @db.Text
+  TribPISAliquota           String @db.Text
+  TribCOFINSPauta           String @db.Text
+  TribCOFINSAliquota        String @db.Text
+  NFReferencia              String @db.Text
+  SerieNFReferencia         String @db.Text
+  DataNFReferencia          String @db.Text
+  StatusNFe                 String @db.Text
+  MotivoRejeicaoDenegacao   String @db.Text
+  DescricaoMotivo           String @db.Text
+  DataContingencia          String @db.Text
+  HoraContingencia          String @db.Text
+  NrProtocolo               String @db.Text
+  ChaveAcessoNFe            String @db.Text
+  IndicadorNFe              String @db.Text
+  HoraEnvio                 String @db.Text
+  HoraRetorno               String @db.Text
+  IndicadorCaneta           String @db.Text
+  IndicadorForaRotaEntrega  String @db.Text
+  IDMensageria              String @db.Text
+  StatusSefazHBNFeX         String @db.Text
+  DataRetornoHBNFeX         String @db.Text
+  HoraRetornoHBNFeX         String @db.Text
+  DataEnvio2V               String @db.Text
+  EstoqueAtualizado         String @db.Text
+  DtEmissaoFiscal           String @db.Text
+  NotaFiscalExportadaPromax String @db.Text
+  Prazo                     String @db.Text
+  NFRetornoVasilhame        String @db.Text
+  NFVendaAGProdutoMaterial  String @db.Text
+  NFRetornoRemessaPuxadaAG  String @db.Text
+  NFRecolhaComodato         String @db.Text
+  NFTrocaRealizada          String @db.Text
+  TaxaEntrega               String @db.Text
+  OrigemPedido              String @db.Text
+  VlDescontoAlgoritmo       String @db.Text
+  MetaAlgoritmo             String @db.Text
+  DescDisponivelPadrao      String @db.Text
+  DescDisponivelAcao        String @db.Text
+  VlDescontoAlgoritmoAut    String @db.Text
+  CodigoAcaoDescontoAlgFix  String @db.Text
+  ValorTTVPlanejado         String @db.Text
+  ValorSugerido             String @db.Text
+  CodSetorAtendimento       String @db.Text
+  TipoSetorAtendimento      String @db.Text
+  Setor                     String @db.Text
+  CodigoEscalonadaPedido    String @db.Text
+  TipoEscalonadaPedido      String @db.Text
+  FaixaEscalonadaPedido     String @db.Text
+  IndicadorPrecoPontual     String @db.Text
+  IndicadorPrecoCheio       String @db.Text
+  TTVDaEscalonadaPedido     String @db.Text
+  IndicadorUnidade          String @db.Text
+  DataCapturaPedido         String @db.Text
+  NFRegerada                String @db.Text
+  SerieNFRegerada           String @db.Text
+  IndicadorCancelamento     String @db.Text
+  RedIcmsProprio            String @db.Text
+  RedFecopProprio           String @db.Text
+  RedIcmsST                 String @db.Text
+  RedFecopST                String @db.Text
+  CodSituacaoTributaria     String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model Base030224 {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id          Int    @id @default(autoincrement())
+  csvBufferId Int
+  Motorista   String @db.Text
+  Data        String @db.Text
+  UnbNota     String @db.Text
+  Nota        String @db.Text
+  Serie       String @db.Text
+  UnbCliente  String @db.Text
+  CodCliente  String @db.Text
+  NomeCliente String @db.Text
+  Telefone    String @db.Text
+  Area        String @db.Text
+  Setor       String @db.Text
+  Placa       String @db.Text
+  Valor       String @db.Text
+  Volume      String @db.Text
+  DataDevol   String @db.Text
+  CodMotivo   String @db.Text
+  DescMotivo  String @db.Text
+  OrigPedido  String @db.Text
+  Usuario     String @db.Text
+  Hora        String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model BaseBees {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                                      Int    @id @default(autoincrement())
+  csvBufferId                             Int
+  tour_display_id                         String @db.Text
+  tour_date                               String @db.Text
+  distribution_center_id                  String @db.Text
+  driver_name                             String @db.Text
+  poc_external_id                         String @db.Text
+  status                                  String @db.Text
+  trip_start_timestamp                    String @db.Text
+  trip_end_timestamp                      String @db.Text
+  visit_order                             String @db.Text
+  within_radius                           String @db.Text
+  actual_delivery_time                    String @db.Text
+  arrived_at                              String @db.Text
+  finished_at                             String @db.Text
+  last_reason_waiting_modulation          String @db.Text
+  last_reason_rescheduled                 String @db.Text
+  total_delivered_vol                     String @db.Text
+  total_refused_vol                       String @db.Text
+  foxtrot_adherence                       String @db.Text
+  estimated_delivery_time                 String @db.Text
+  volume_hectoliters_sum                  String @db.Text
+  bees_poc_id                             String @db.Text
+  bees_tour_id                            String @db.Text
+  bees_trip_id                            String @db.Text
+  bees_created_date                       String @db.Text
+  bees_last_reason_id_waiting_modulation  String @db.Text
+  bees_last_reason_id_waiting_rescheduled String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model BaseWMS {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                       Int    @id @default(autoincrement())
+  csvBufferId              Int
+  Armazem                  String @db.Text
+  Mapa                     String @db.Text
+  Palete                   String @db.Text
+  Entrega                  String @db.Text
+  InicioPalete             String @db.Text
+  FimPalete                String @db.Text
+  ExecucaoPaleteSegundos   String @db.Text
+  UsuarioFinalizouPalete   String @db.Text
+  FinalizadoCfeIndicacao   String @db.Text
+  EnderecoDestino          String @db.Text
+  RTLSHab                  String @db.Text
+  RTLSEnderecoDestino      String @db.Text
+  RTLSItensOk              String @db.Text
+  PesoPaleteOk             String @db.Text
+  PesoPaleteEsperado       String @db.Text
+  PesoPaleteReal           String @db.Text
+  Balanca                  String @db.Text
+  CodigoItem               String @db.Text
+  DescricaoItem            String @db.Text
+  Tipo                     String @db.Text
+  PesoEsperado             String @db.Text
+  PesoReal                 String @db.Text
+  EnderecosSugeridos       String @db.Text
+  EnderecoSelecionado      String @db.Text
+  Quantidade               String @db.Text
+  UnidadeMedida            String @db.Text
+  Chapatex                 String @db.Text
+  Papelao                  String @db.Text
+  Sequencia                String @db.Text
+  UsuarioSeparacao         String @db.Text
+  InicioSeparacaoItem      String @db.Text
+  FimSeparacaoItem         String @db.Text
+  EsforcoSegundos          String @db.Text
+  RTLSHabilitadoItem       String @db.Text
+  UtilizouRTLSItem         String @db.Text
+  PesoOKItem               String @db.Text
+  ItemConferido            String @db.Text
+  HistoricoRegistros       String @db.Text
+  PaleteConferido          String @db.Text
+  SorteadoParaBlitz        String @db.Text
+  RegrasBlitzClassificadas String @db.Text
+  UtilizouPercentualMinimo String @db.Text
+  PaleteIniciadoComProduto String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model BaseClientes {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                  Int    @id @default(autoincrement())
+  csvBufferId         Int
+  GrupoPerfil         String @db.Text
+  CodSetor            String @db.Text
+  DescricaoSetor      String @db.Text
+  CodigoCliente       String @db.Text
+  RazaoSocial         String @db.Text
+  Bairro              String @db.Text
+  Ordem               String @db.Text
+  StatusCliente       String @db.Text
+  NomeFantasia        String @db.Text
+  FrequenciaVisita    String @db.Text
+  Periodicidade       String @db.Text
+  ProximaVisita       String @db.Text
+  VisitaOriginal      String @db.Text
+  InicioVisita        String @db.Text
+  CNPJ                String @db.Text
+  InscricaoEstadual   String @db.Text
+  CodEstabelecimento  String @db.Text
+  NomeEstabelecimento String @db.Text
+  CodPagto            String @db.Text
+  DescricaoPagto      String @db.Text
+  Serasa              String @db.Text
+  Observacao          String @db.Text
+  Contato             String @db.Text
+  CNPJContato         String @db.Text
+  ContatoCNPJ         String @db.Text
+  OrdemPorHistorico   String @db.Text
+  DiasEntrega         String @db.Text
+  ElDorado            String @db.Text
+  Endereco            String @db.Text
+  Cidade              String @db.Text
+  CodSegmento         String @db.Text
+  Segmento            String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
 
 model BaseProdutos {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  uploadedAt   DateTime @default(now())
-  fileBuffer   Bytes
-  uploader     String?
+  id                   Int    @id @default(autoincrement())
+  csvBufferId          Int
+  Codigo               String @db.Text
+  Descricao            String @db.Text
+  PGV                  String @db.Text
+  Empresa              String @db.Text
+  TipoMarca            String @db.Text
+  LinhaMarca           String @db.Text
+  Embalagem            String @db.Text
+  Marca                String @db.Text
+  Vasilhame            String @db.Text
+  Garrrafeira          String @db.Text
+  ICMS                 String @db.Text
+  TipoRoadshow         String @db.Text
+  PesoBrutoKg          String @db.Text
+  Fator                String @db.Text
+  FatorHecto           String @db.Text
+  FatorHectoComercial  String @db.Text
+  IndPalmtop           String @db.Text
+  Grupo                String @db.Text
+  GrupoRemuneracao     String @db.Text
+  EAN                  String @db.Text
+  TabICMS              String @db.Text
+  CaixasPallet         String @db.Text
+  NrFatorConversao     String @db.Text
+  Lastro               String @db.Text
+  FamEmbalagemSIV      String @db.Text
+  PautaPISLitro        String @db.Text
+  PautaCOFINSLitro     String @db.Text
+  CaixasPallet1        String @db.Text
+  Capacidade1          String @db.Text
+  FatAjust1            String @db.Text
+  CaixasPallet2        String @db.Text
+  Capacidade2          String @db.Text
+  FatAjust2            String @db.Text
+  CaixasPallet3        String @db.Text
+  Capacidade3          String @db.Text
+  FatAjust3            String @db.Text
+  OrdemDeCarga         String @db.Text
+  EstoqueMinimoPuxada  String @db.Text
+  CodigoProdutoSAP     String @db.Text
+  VasilhameFicticio    String @db.Text
+  NCM                  String @db.Text
+  ApuraRoyalties       String @db.Text
+  TipoProdutoRoyalties String @db.Text
+  CEST                 String @db.Text
+  EANTrib              String @db.Text
+  CodigoUnitario       String @db.Text
+  DescricaoUnitaria    String @db.Text
+  Subtipo              String @db.Text
+
+  // Relação
+  csvBuffer CsvBufferBases @relation(fields: [csvBufferId], references: [id])
 }
-
-
-model CsvBufferBases {
-  id            Int      @id @default(autoincrement())
-  baseId        String   // Ex: '031140'
-  uploadedAt    DateTime @default(now())
-  baseMinDate   DateTime // menor Dt Entrega do CSV
-  baseMaxDate   DateTime // maior Dt Entrega do CSV
-  fileBuffer    Bytes // Buffer do CSV
-  uploader      String?
-} 
