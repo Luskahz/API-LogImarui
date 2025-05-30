@@ -2,7 +2,7 @@ import { csvStringParaJson, limparCabecalhosCsv, getMinMaxDtEntrega, jsonParaCsv
 import { validateBaseById} from "../../model/schemas/basesSchemaMap.js"
 import { createCsvBuffer } from "../../model/bases/csvBufferModel.js"
 
-export default async function base031140Controller(fileBuffer, uploader, baseId) {
+export default async function base031140Controller(fileBuffer, uploader, baseId, req, bufferId) {
   try {
     //TRATANDO O ARQUIVO PARA JSON
     const fileString = fileBuffer.toString('latin1') //buffer em string
@@ -19,15 +19,11 @@ export default async function base031140Controller(fileBuffer, uploader, baseId)
       const details = validateJsonData.error.format()
       return { success: false, error: "Csv incorreto, valide o arquivo", details }
     }
+
+
     //CONSTRUINDO METADADOS PARA SALVAR NA BASE 031140
-    const metadata = {
-      baseId: baseId,
-      uploadedAt: new Date(),
-      baseMinDate: minDate,
-      baseMaxDate: maxDate,
-      fileBuffer: fileBufferLimpo,  
-      uploader: uploader || 'Developer',
-    }
+    const metadata = {}
+
 
     const result = await createCsvBuffer(metadata) //salva o buffer na base csvBufferBases
 

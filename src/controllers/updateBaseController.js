@@ -30,16 +30,24 @@ export default async function updateBaseController(req, res, next) {
 
 
     //SALVANDO O BUFFER NA BASE CSVBUFFER
-    const resultBuffer = await baseControllers["csvBuffer"](fileBuffer, uploader, baseId)
+    const resultBuffer = await baseControllers["csvBuffer"](req, fileBuffer, uploader, baseId)
     if (!resultBuffer.success) {
-      return res.status(400).json({message: "erro ao salvar o buffer no banco", error: resultBuffer.error, details: resultBuffer.details })
+      return res.status(400).json({
+        message: "erro ao salvar o buffer no banco",
+        error: resultBuffer.error,
+        details: resultBuffer.details
+      })
     }
-
+    const bufferId = resultBuffer.bufferId 
 
     //SALVANDO O CSV NA BASE ESPECÍFICA
-    const result = await selectedBaseController(fileBuffer, uploader, baseId)
+    const result = await selectedBaseController(fileBuffer, uploader, baseId, req, bufferId)
     if (!result.success) {
-      return res.status(400).json({ message: "erro ao salvar os objetos na base", error: result.error, details: result.details })
+      return res.status(400).json({
+        message: "erro ao salvar os objetos na base",
+        error: result.error,
+        details: result.details
+      })
     }
 
     //RESPOSTA AO USER

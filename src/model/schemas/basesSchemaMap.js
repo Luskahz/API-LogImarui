@@ -1,10 +1,5 @@
 import { z } from "zod";
 
-function parseDate(str) {
-  const [dd, mm, yyyy] = str.split('/');
-  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
-  return isNaN(parsed.getTime()) ? null : parsed;
-}
 
 export const Schema031140 = z.array(z.object({
   "Mapa": z.string().min(1),

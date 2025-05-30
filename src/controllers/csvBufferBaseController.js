@@ -10,7 +10,7 @@ import { validateBaseById } from "../model/schemas/basesSchemaMap.js"
 import { createCsvBuffer } from "../model/bases/csvBufferModel.js"
 
 
-export default async function csvBufferBaseController(fileBuffer, uploader, baseId) {
+export default async function csvBufferBaseController(req, fileBuffer, uploader, baseId) {
 try {
     //TRATANDO O ARQUIVO PARA JSON
     const fileString = fileBuffer.toString('latin1') //buffer em string
@@ -50,8 +50,10 @@ try {
       console.log(`Buffer salvo com sucesso na base csvBuffer para a baseId: ${baseId}`)
       return {
         success: true,
-        data: result
+        data: result,
+        bufferId: result.data.id
       }
+      
 
     }
   } catch (error) {
